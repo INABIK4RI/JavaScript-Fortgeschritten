@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <label for="locationsRadio" id="locations">Locations</label>
+    <input type="radio" name="option" id="locationsRadio" value="locations">
+    <label for="layersRadio" id="layers">Layers</label>
+    <input type="radio" name="option" id="layersRadio" value="layers">
+    <br>
+
+    <input type="text" id="searchInput">
+    <button type="submit" onclick="requestData()">Search</button>
+    <p id="output"></p>
+    <script>
+        console.log('Hello World');
+        
+        async function requestData() {
+
+            // Mein Input als Variable
+            const searchInput = document.getElementById('searchInput').value;
+
+            // Checked ob Locations oder Layers angekreuzt wurde
+            const locationsChecked = document.getElementById('locationsRadio').checked;
+            const layersChecked = document.getElementById('layersRadio').checked;
+
+            let outputText = '';
+
+            if (locationsChecked){
+                const response = await fetch(`https://api3.geo.admin.ch/rest/services/api/SearchServer?type=locations&searchText=${encodeURIComponent(searchInput)}&limit=10`);
+                const json = await response.json();
+                console.log(json);
+
+                //Ausgabe in der Konsole
+                for(const location of json.results) {
+                    console.log(location.attrs.label);
+                } 
+
+                for(const location of json.results) {
+                    if (location.attrs && location.attrs.label) {
+                        outputText += location.attrs.label + '<br>';
+                    }
+                }
+
+            } else if (layersChecked){
+                const response_layers = await fetch(`https://api3.geo.admin.ch/rest/services/api/SearchServer?type=layers&searchText=${encodeURIComponent(searchInput)}&limit=10`);
+                const json_layers = await response_layers.json();
+                console.log(json_layers);
+
+                //Ausgabe in der Konsole
+                for(const layers of json_layers.results) {
+                    console.log(layers.attrs.label);
+                } 
+
+                for(const layers of json_layers.results) {
+                    if (layers.attrs && layers.attrs.label) {
+                        outputText += layers.attrs.label + '<br>';
+                    }
+                }
+
+            }
+
+            const response2 = await fetch('https://api3.geo.admin.ch/rest/services/api/MapServer');
+            const json2 = await response2.json();
+            console.log(json2);
+
+            const response3 = await fetch('https://api3.geo.admin.ch/rest/services/height?easting=2600000&northing=1100000');
+            const json3 = await response3.json();
+            console.log(json3);
+
+            document.getElementById('output').innerHTML = outputText;
+            
+        }
+        document.getElementById('searchInput').addEventListener('input', requestData);
+    </script>
+</body>
+</html>
