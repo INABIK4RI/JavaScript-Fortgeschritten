@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geolocation</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.7.2/proj4.js"></script> <!-- proj4 Library -->
+</head>
+
+<body>
+    <button onclick="getPosition()">Get Position</button>
+    <div id="output"></div>
+
+    <script>
+        console.log('Hello World');
+
+        async function getPosition() {
+            navigator.geolocation.getCurrentPosition(async position => {
+                console.log(position);
+
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+
+                // Umrechnung von WGS84 in LV95 mit proj4
+                const wgs84 = 'EPSG:4326'; // WGS84
+                const lv95 = '+proj=tmerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 +k=1 +x_0=2600000 +y_0=1200000 +datum=WGS84'; // LV95
+
+                // Umrechnung von Koordinaten
+                const [easting, northing] = proj4(wgs84, lv95, [lon, lat]);
+
+                document.body.innerHTML += `<p>Latitude: ${lat}, Longitude: ${lon}</p>`;
+                document.body.innerHTML += `<p>Easting (LV95): ${easting}, Northing (LV95): ${northing}</p>`;
+
+                // API-Aufruf zur Bestimmung der Höhe über dem Meeresspiegel
+                const url = `https://api3.geo.admin.ch/rest/services/height?easting=${easting}&northing=${northing}&layers=dtm`;
+                const response = await fetch(url);
+                const data = await response.json();
+                console.log(data);
+
+                // Zeige die Höhe an
+                if (data.height) {
+                    document.body.innerHTML += `<p>Höhe: ${data.height} m</p>`;
+                } else {
+                    document.body.innerHTML += `<p>Höhe konnte nicht abgerufen werden.</p>`;
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>
