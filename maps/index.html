@@ -56,7 +56,6 @@
                 logs.scrollTop = logs.scrollHeight;
                 polyline.addLatLng([position.coords.latitude, position.coords.longitude]); // Neue Position zur Linie hinzufügen
                 map.setView(L.latLng(position.coords.latitude, position.coords.longitude), 12);
-                L.marker([position.coords.latitude, position.coords.longitude]).addTo(map);
             });
         });
     </script>
