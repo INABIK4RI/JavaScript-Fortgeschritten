@@ -44,13 +44,14 @@
         let polyline = L.polyline([], { radius: 20, color: '#1F51FF', fillColor: '#39ff14' }).addTo(map);
         const locateButton = document.querySelector('#locate');
         const trackbutton = document.querySelector('#track');
+
         locateButton.addEventListener('click', () => {
             navigator.geolocation.getCurrentPosition(position => {
                 L.marker([position.coords.latitude, position.coords.longitude]).addTo(map);
             });
         });
         trackbutton.addEventListener('click', () => {
-        navigator.geolocation.watchPosition(position => {
+            navigator.geolocation.watchPosition(position => {
                 console.log(position);
                 logs.textContent += `Location: ${position.coords.latitude} lat, ${position.coords.longitude} long\n`;
                 logs.scrollTop = logs.scrollHeight;
