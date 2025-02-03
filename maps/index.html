@@ -25,6 +25,7 @@
     <textarea name="coords" id="coords"></textarea>
 
     <button id="locate">Locate Me</button>
+    <button id="track">Track Me</button>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
@@ -42,8 +43,14 @@
         const logs = document.querySelector('textarea[name="coords"]');
         let polyline = L.polyline([], { radius: 20, color: '#1F51FF', fillColor: '#39ff14' }).addTo(map);
         const locateButton = document.querySelector('#locate');
+        const trackbutton = document.querySelector('#track');
         locateButton.addEventListener('click', () => {
-            navigator.geolocation.watchPosition(position => {
+            navigator.geolocation.getCurrentPosition(position => {
+                L.marker([position.coords.latitude, position.coords.longitude]).addTo(map);
+            });
+        });
+        trackbutton.addEventListener('click', () => {
+        navigator.geolocation.watchPosition(position => {
                 console.log(position);
                 logs.textContent += `Location: ${position.coords.latitude} lat, ${position.coords.longitude} long\n`;
                 logs.scrollTop = logs.scrollHeight;
