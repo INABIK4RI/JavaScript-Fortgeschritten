@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hand Webcam</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
+    <script src="https://unpkg.com/ml5@1/dist/ml5.min.js"></script>
+</head>
+
+<style>
+    #webcam {
+        transform: scaleX(-1);
+        border: 10px solid #481eab;
+        border-radius: 5px;
+        filter: saturate(150%);
+    }
+</style>
+
+
+<body>
+    <video id="webcam"></video>
+    <script>
+        let handPose;
+        let video;
+        let hands = [];
+
+        function preload() {
+            // Load the handPose model
+            handPose = ml5.handPose();
+        }
+
+        function setup() {
+            createCanvas(1000, 520);
+            // Create the webcam video and hide it
+            video = createCapture(VIDEO);
+            video.size(1000, 520);
+            video.hide(); 
+            // start detecting hands from the webcam video
+            handPose.detectStart(video, gotHands);
+        }
+
+        function draw() {
+            // Draw the webcam video
+            image(video, 0, 0, width, height);
+
+            // Draw all the tracked hand points
+            for (let i = 0; i < hands.length; i++) {
+                let hand = hands[i];
+                for (let j = 0; j < hand.keypoints.length; j++) {
+                    let keypoint = hand.keypoints[j];
+                    fill(0, 255, 0);
+                    noStroke();
+                    circle(keypoint.x, keypoint.y, 10);
+                }
+            }
+        }
+
+        // Callback function for when handPose outputs data
+        function gotHands(results) {
+            // save the output to the hands variable
+            hands = results;
+        }
+
+        async function getWebStream() {
+            const videoElem = document.querySelector('#webcam');
+            videoElem.srcObject = await navigator.mediaDevices.getUserMedia({
+                video: {
+                    width: 1000,
+                    height: 520
+                }
+            });
+
+            videoElem.onloadedmetadata = () => {
+                videoElem.play();
+            };
+        }
+
+        getWebStream();
+    </script>
+</body>
+
+</html>
