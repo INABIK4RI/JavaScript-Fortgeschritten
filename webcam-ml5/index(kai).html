@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Finger Gesture Drawing</title>
+    <style>
+        /* Einfaches Styling */
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- p5.js und ml5.js einbinden -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script src="https://unpkg.com/ml5@0.6.0/dist/ml5.min.js"></script>
+    <canvas></canvas>
+    <script>
+        let video;
+        let handpose;
+        let predictions = []; // Hier speichern wir die Handerkennungsergebnisse
+        let drawingPoints = []; // Alle erkannten Punkte, die wir zeichnen
+        // Optional: Variable für den vorherigen Punkt (für Linien)
+        let prevPoint = null;
+        // Hier könntest du später einen Modus einbauen, z. B. drawingOn = true/false
+        let isDrawing = true; // Im Beispiel immer aktiv
+
+        function setup() {
+            createCanvas(640, 480);
+            // Erstelle und konfiguriere das Video-Element
+            video = createCapture(VIDEO);
+            video.size(640, 480);
+            video.hide();
+
+            // Initialisiere ml5 Handpose mit dem Video-Stream
+            handpose = ml5.handpose(video, modelReady);
+            // Sobald neue Vorhersagen vorliegen, speichere sie in "predictions"
+            handpose.on("predict", (results) => {
+                predictions = results;
+            });
+        }
+
+        function modelReady() {
+            console.log("Handpose Modell geladen!");
+        }
+
+        function draw() {
+            translate(width, 0); // Verschiebe das Koordinatensystem nach rechts
+            scale(-1, 1);
+            background(220);
+            // Optional: Zeichne das Video im Hintergrund (kann auch ausgeblendet werden)
+            image(video, 0, 0, width, height);
+
+            // Zeichne die bisher gesammelten Punkte als Linie
+            stroke(0, 100, 255);
+            strokeWeight(3);
+            noFill();
+            beginShape();
+            for (let pt of drawingPoints) {
+                vertex(pt.x, pt.y);
+            }
+            endShape();
+
+            // Wenn Handdaten vorliegen
+            if (predictions.length > 0) {
+                let hand = predictions[0];
+                // Wir verwenden hier den Punkt des Zeigefingers (landmark 8)
+                let indexTip = hand.landmarks[8];
+                let x = indexTip[0];
+                let y = indexTip[1];
+
+                // Zeichne einen grünen Punkt an der Zeigefingerspitze
+                fill(0, 255, 0);
+                noStroke();
+                circle(x, y, 10);
+
+                // Wenn Zeichnen aktiviert ist, speichere den aktuellen Punkt
+                if (isDrawing) {
+                    drawingPoints.push({ x: x, y: y });
+                }
+
+                // Optional: Speichere den aktuellen Punkt als "previous" für weitere Logik
+                prevPoint = { x: x, y: y };
+            }
+        }
+    </script>
+</body>
+
+</html>
