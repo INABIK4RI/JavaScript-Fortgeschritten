@@ -13,15 +13,49 @@
         }
 
         textarea[name="coords"] {
-            width: 80vw;
-            height: 200px;
+            width: 97vw;
+            height: 100px;
+        }
+
+        .leaflet-routing-alt h2,
+        h3 {
+            display: block;
+            text-align: center;
+        }
+
+        .leaflet-bar {
+            background-color: rgb(130, 251, 130)
+        }
+
+        .leaflet-routing-container table {
+            background-color: white;
+            opacity: 1;
+        }
+
+        .leaflet-routing-container .leaflet-routing-alternatives-container {
+            max-height: 470px;
+            overflow-y: auto;
+        }
+
+        .leaflet-routing-container .leaflet-routing-alternatives-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .leaflet-routing-container .leaflet-routing-alternatives-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            /* Hintergrund der Scroll-Leiste */
+        }
+
+        .leaflet-routing-container .leaflet-routing-alternatives-container::-webkit-scrollbar-thumb {
+            background: #888;
+            /* Farbe des Scrollbalkens */
+            border-radius: 10px;
         }
     </style>
 </head>
 
 <body>
     <div id="map"></div>
-
     <textarea name="coords" id="coords"></textarea>
 
     <button id="locate">Locate Me</button>
@@ -29,20 +63,17 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-        <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
 
-    <script>// Initialisiere die Karte
+    <script>
         var map = L.map('map').setView([46.57591, 7.84956], 8);
 
-        // Tile Layer (Schweizer Kartenhintergrund)
         const url = 'https://wmts20.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg';
         L.tileLayer(url).addTo(map);
 
-        // Variablen für Marker & Route
         let currentMarker = null;
         let routeControl = null;
 
-        // Klick-Event für die Karte
         map.on('click', function (e) {
             // Entferne alten Marker, falls vorhanden
             if (currentMarker) {
@@ -101,27 +132,6 @@
                 map.setView(L.latLng(position.coords.latitude, position.coords.longitude), 12);
             });
         });
-    </script>
-
-    <script>
-        let wakeLock = null;
-
-        async function requestWakeLock() {
-            try {
-                wakeLock = await navigator.wakeLock.request('screen');
-                console.log('Wake Lock is active');
-            } catch (err) {
-                console.error(`${err.name}, ${err.message}`);
-            }
-        }
-
-        document.addEventListener('visibilitychange', async () => {
-            if (wakeLock !== null && document.visibilityState === 'visible') {
-                await requestWakeLock();
-            }
-        });
-
-        requestWakeLock();
     </script>
 </body>
 
