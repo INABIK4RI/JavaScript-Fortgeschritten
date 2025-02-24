@@ -96,24 +96,52 @@
 
 
         // Routing-Container ein- und ausblenden (Für Smartphone)
-        document.addEventListener('DOMContentLoaded', function() {
-    const toggleButton = document.getElementById('toggle-routing-mobile');
+        document.addEventListener('DOMContentLoaded', function () {
+            const toggleButton = document.getElementById('toggle-routing-mobile');
 
-    toggleButton.addEventListener('click', function() {
-        const routingContainer = document.querySelector('.leaflet-routing-container');
-        
-        if (routingContainer) {
-            routingContainer.classList.toggle('active');
+            toggleButton.addEventListener('click', function () {
+                const routingContainer = document.querySelector('.leaflet-routing-container');
 
-            // Button-Text ändern
-            if (routingContainer.classList.contains('active')) {
-                toggleButton.textContent = 'Routenanweisungen ausblenden';
-            } else {
-                toggleButton.textContent = 'Routenanweisungen anzeigen';
-            }
-        }
-    });
-});
+                if (routingContainer) {
+                    routingContainer.classList.toggle('active');
+
+                    // Button-Text ändern
+                    if (routingContainer.classList.contains('active')) {
+                        toggleButton.textContent = 'Routenanweisungen ausblenden';
+                    } else {
+                        toggleButton.textContent = 'Routenanweisungen anzeigen';
+                    }
+                }
+
+
+
+
+                // Text-to-Speech
+                function speakText(text) {
+                    if ('speechSynthesis' in window) {
+                        var msg = new SpeechSynthesisUtterance(text);
+                        window.speechSynthesis.speak(msg);
+                    } else {
+                        alert("Text-to-Speech wird von deinem Browser nicht unterstützt.");
+                    }
+
+                    
+                } navigator.geolocation.watchPosition(function (position) {
+                    const currentPosition = L.latLng(position.coords.latitude, position.coords.longitude);
+
+                    // Berechne dynamisch, ob der Nutzer an einem Punkt angekommen ist, wo eine Anweisung gemacht werden soll.
+                    const distance = map.distance(currentPosition, someDynamicTargetLatLng); // Berechnung der Entfernung
+
+                    // Wenn der Benutzer in der Nähe ist (z. B. 100 Meter), sage die Anweisung
+                    if (distance < 100) {
+                        speakText("Du hast die Abzweigung erreicht. Biege links ab.");
+                    }
+                });
+
+
+
+            });
+        });
 
     </script>
 </body>
