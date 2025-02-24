@@ -1,0 +1,96 @@
+#map {
+    height: 500px;
+}
+
+textarea[name="coords"] {
+    width: 95vw;
+    height: 100px;
+}
+
+.leaflet-routing-alt h2,
+h3 {
+    display: block;
+    text-align: center;
+}
+
+.leaflet-bar {
+    background-color: rgb(130, 251, 130)
+}
+
+.leaflet-routing-container table {
+    background-color: white;
+    opacity: 1;
+}
+
+.leaflet-routing-container .leaflet-routing-alternatives-container {
+    max-height: 470px;
+    overflow-y: auto;
+}
+
+.leaflet-routing-container .leaflet-routing-alternatives-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.leaflet-routing-container .leaflet-routing-alternatives-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    /* Hintergrund der Scroll-Leiste */
+}
+
+.leaflet-routing-container .leaflet-routing-alternatives-container::-webkit-scrollbar-thumb {
+    background: #888;
+    /* Farbe des Scrollbalkens */
+    border-radius: 10px;
+}
+
+.button-container {
+    display: flex;               /* Flexbox aktivieren */
+    justify-content: center;     /* Zentriert die Buttons horizontal */
+    align-items: center;         /* Zentriert die Buttons vertikal */
+    width: 100%;                 /* Volle Breite des Containers */
+}
+
+
+
+
+@media only screen and (max-width: 600px) {
+    .leaflet-routing-container {
+        display: none;
+        position: relative;
+        width: 100%;
+        background: white;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        max-height: 50vh;
+        overflow-y: auto;
+    }
+
+    .leaflet-routing-container.active {
+        display: block;
+    }
+
+    #toggle-routing-mobile {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        text-align: center;
+        cursor: pointer;
+    }
+
+    #toggle-routing-mobile.active {
+        background-color: #0056b3;
+    }
+
+    .leaflet-bar {
+        background-color: rgb(130, 251, 130)
+    }
+}
+
+@media only screen and (min-width: 601px) {
+    #toggle-routing-mobile {
+        display: none; /* Button wird auf größeren Bildschirmen ausgeblendet */
+    }
+}

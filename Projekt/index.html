@@ -7,59 +7,20 @@
     <title>Document</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-    <style>
-        #map {
-            height: 500px;
-        }
-
-        textarea[name="coords"] {
-            width: 97vw;
-            height: 100px;
-        }
-
-        .leaflet-routing-alt h2,
-        h3 {
-            display: block;
-            text-align: center;
-        }
-
-        .leaflet-bar {
-            background-color: rgb(130, 251, 130)
-        }
-
-        .leaflet-routing-container table {
-            background-color: white;
-            opacity: 1;
-        }
-
-        .leaflet-routing-container .leaflet-routing-alternatives-container {
-            max-height: 470px;
-            overflow-y: auto;
-        }
-
-        .leaflet-routing-container .leaflet-routing-alternatives-container::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .leaflet-routing-container .leaflet-routing-alternatives-container::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            /* Hintergrund der Scroll-Leiste */
-        }
-
-        .leaflet-routing-container .leaflet-routing-alternatives-container::-webkit-scrollbar-thumb {
-            background: #888;
-            /* Farbe des Scrollbalkens */
-            border-radius: 10px;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
     <div id="map"></div>
     <textarea name="coords" id="coords"></textarea>
+    <div id="routing-container-mobile"></div>
 
-    <button id="locate">Locate Me</button>
-    <button id="track">Track Me</button>
+    <button id="toggle-routing-mobile">Routenanweisungen anzeigen</button>
+    <div class="button-container">
+        <button id="locate">Locate Me</button>
+        <button id="track">Track Me</button>
+    </div>
+
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
@@ -132,6 +93,28 @@
                 map.setView(L.latLng(position.coords.latitude, position.coords.longitude), 12);
             });
         });
+
+
+        // Routing-Container ein- und ausblenden (Für Smartphone)
+        document.addEventListener('DOMContentLoaded', function() {
+    const toggleButton = document.getElementById('toggle-routing-mobile');
+
+    toggleButton.addEventListener('click', function() {
+        const routingContainer = document.querySelector('.leaflet-routing-container');
+        
+        if (routingContainer) {
+            routingContainer.classList.toggle('active');
+
+            // Button-Text ändern
+            if (routingContainer.classList.contains('active')) {
+                toggleButton.textContent = 'Routenanweisungen ausblenden';
+            } else {
+                toggleButton.textContent = 'Routenanweisungen anzeigen';
+            }
+        }
+    });
+});
+
     </script>
 </body>
 
