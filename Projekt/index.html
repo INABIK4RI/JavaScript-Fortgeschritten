@@ -57,20 +57,24 @@
                 .bindPopup(`Marker bei <br> Latitude: ${e.latlng.lat}, <br> Longitude: ${e.latlng.lng}`)
                 .openPopup();
 
-            // Hole aktuelle Position des Nutzers
-            navigator.geolocation.getCurrentPosition(position => {
+            // Hole aktuelle Position des Nutzers und aktualisiere die Route bei Bewegung
+            navigator.geolocation.watchPosition(position => {
                 let userLatLng = L.latLng(position.coords.latitude, position.coords.longitude);
                 let markerLatLng = e.latlng;
 
-                // Erstelle die Route
-                routeControl = L.Routing.control({
-                    waypoints: [
-                        userLatLng,  // Startpunkt (aktuelle Position)
-                        markerLatLng // Ziel (Marker)
-                    ],
-                    createMarker: function () { return null; }, // Keine zusätzlichen Marker setzen
-                    routeWhileDragging: true // Route kann beim Ziehen aktualisiert werden
-                }).addTo(map);
+                // Erstelle oder aktualisiere die Route
+                if (routeControl) {
+                    routeControl.setWaypoints([userLatLng, markerLatLng]);
+                } else {
+                    routeControl = L.Routing.control({
+                        waypoints: [
+                            userLatLng,  // Startpunkt (aktuelle Position)
+                            markerLatLng // Ziel (Marker)
+                        ],
+                        createMarker: function () { return null; }, // Keine zusätzlichen Marker setzen
+                        routeWhileDragging: true // Route kann beim Ziehen aktualisiert werden
+                    }).addTo(map);
+                }
             }, error => {
                 alert("Fehler beim Abrufen der aktuellen Position.");
             });
@@ -144,19 +148,23 @@
                             .bindPopup(`Marker bei <br> Latitude: ${latlng.lat}, <br> Longitude: ${latlng.lng}`)
                             .openPopup();
 
-                        // Hole aktuelle Position des Nutzers
-                        navigator.geolocation.getCurrentPosition(position => {
+                        // Hole aktuelle Position des Nutzers und aktualisiere die Route bei Bewegung
+                        navigator.geolocation.watchPosition(position => {
                             let userLatLng = L.latLng(position.coords.latitude, position.coords.longitude);
 
-                            // Erstelle die Route
-                            routeControl = L.Routing.control({
-                                waypoints: [
-                                    userLatLng,  // Startpunkt (aktuelle Position)
-                                    latlng // Ziel (Marker)
-                                ],
-                                createMarker: function () { return null; }, // Keine zusätzlichen Marker setzen
-                                routeWhileDragging: true // Route kann beim Ziehen aktualisiert werden
-                            }).addTo(map);
+                            // Erstelle oder aktualisiere die Route
+                            if (routeControl) {
+                                routeControl.setWaypoints([userLatLng, latlng]);
+                            } else {
+                                routeControl = L.Routing.control({
+                                    waypoints: [
+                                        userLatLng,  // Startpunkt (aktuelle Position)
+                                        latlng // Ziel (Marker)
+                                    ],
+                                    createMarker: function () { return null; }, // Keine zusätzlichen Marker setzen
+                                    routeWhileDragging: true // Route kann beim Ziehen aktualisiert werden
+                                }).addTo(map);
+                            }
                         }, error => {
                             alert("Fehler beim Abrufen der aktuellen Position.");
                         });
