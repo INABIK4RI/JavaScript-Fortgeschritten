@@ -47,11 +47,6 @@
                 map.removeLayer(currentMarker);
             }
 
-            // Entferne alte Route, falls vorhanden
-            if (routeControl) {
-                map.removeControl(routeControl);
-            }
-
             // Setze neuen Marker
             currentMarker = L.marker(e.latlng).addTo(map)
                 .bindPopup(`Marker bei <br> Latitude: ${e.latlng.lat}, <br> Longitude: ${e.latlng.lng}`)
@@ -136,11 +131,6 @@
                         // Entferne alten Marker, falls vorhanden
                         if (currentMarker) {
                             map.removeLayer(currentMarker);
-                        }
-
-                        // Entferne alte Route, falls vorhanden
-                        if (routeControl) {
-                            map.removeControl(routeControl);
                         }
 
                         // Setze neuen Marker
